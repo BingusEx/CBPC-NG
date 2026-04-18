@@ -103,11 +103,37 @@
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
+#include <tbb/concurrent_vector.h>
+#include <tbb/concurrent_unordered_map.h>
+#include <tbb/parallel_for.h>
+#include <tbb/parallel_for_each.h>
+#include <tbb/parallel_invoke.h>
+#include <tbb/parallel_reduce.h>
+#include <tbb/parallel_sort.h>
+#include <tbb/parallel_scan.h>
+#include <tbb/blocked_range.h>
+#include <tbb/blocked_range2d.h>
+
+#include <absl/container/flat_hash_map.h>
+#include <absl/strings/string_view.h>
+#include <absl/strings/str_format.h>
+#include <absl/container/flat_hash_set.h>
+
 namespace logger = SKSE::log;
 using namespace std::literals;
 using namespace REL::literals;
-using namespace RE;
 
 //Global Includes
 #include "Util/Text/Text.hpp"
 #include "Util/Windows/MessageBox.hpp"
+#include "Util/Singleton.hpp"
+#include "Util/Random.hpp"
+#include "Util/Text/Text.hpp"
+
+//#define LOG(fmt, ...) logger::info(fmt, ##__VA_ARGS__)
+//#define LOG_ERR(fmt, ...) logger::error(fmt, ##__VA_ARGS__)
+//#define LOG_INFO(fmt, ...) logger::info(fmt, ##__VA_ARGS__)
+
+#define LOG(fmt, ...)
+#define LOG_ERR(fmt, ...)
+#define LOG_INFO(fmt, ...) 

@@ -6,14 +6,14 @@ cmake_policy(VERSION 3.21...3.31)
 # #######################################################################################################################
 
 project(
-	Template
-	VERSION 1.0.0.0
-	DESCRIPTION "Template"
+	cbp
+	VERSION 0.0.0.1
+	DESCRIPTION "A port of CBPC physics to CommonLib NG"
 	LANGUAGES CXX
 )
 
 # Not Explosed By Cmake, Manually Set Here for use by version.rc.in
-set(PROJECT_COPYRIGHT "MIT")
+set(PROJECT_COPYRIGHT "")
 set(PROJECT_DESCRIPTION "${PROJECT_DESCRIPTION}")
 set(PROJECT_NAME "${PROJECT_NAME}")
 set(PROJECT_FRIENDLY_NAME "${PROJECT_NAME}")
@@ -65,6 +65,9 @@ find_path(CLIB_UTIL_INCLUDE_DIRS "ClibUtil/Utils.hpp")
 find_path(SIMPLEINI_INCLUDE_DIRS "ConvertUTF.c")
 find_path(DETOURS_INCLUDE_DIRS "detours/detours.h")
 find_library(DETOURS_LIBRARY detours REQUIRED)
+find_package(tbb CONFIG REQUIRED)
+find_package(absl CONFIG REQUIRED)
+find_package(re2 CONFIG REQUIRED)
 
 # #######################################################################################################################
 # # Find dependencies - Git
@@ -95,6 +98,10 @@ target_link_libraries(
 	PRIVATE
     ${DETOURS_LIBRARY}
 	xbyak::xbyak
+	TBB::tbb
+	absl::base
+	absl::flat_hash_map
+	re2::re2
 )
 
 # #######################################################################################################################

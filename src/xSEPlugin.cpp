@@ -1,65 +1,35 @@
 #include "Util/Logger/Logger.hpp"
+#include "Hooks/Hooks.hpp"
 #include "Version.hpp"
 
-namespace {
+#include "CBPC/Config/Config.hpp"
 
+namespace {
 	void InitializeMessaging() {
 
 		if (!SKSE::GetMessagingInterface()->RegisterListener([](SKSE::MessagingInterface::Message* a_Message) {
 
 			switch (a_Message->type) {
 
-				// Called after all plugins have finished running SKSEPluginLoad.
-				case SKSE::MessagingInterface::kPostLoad:{
-					logger::debug("kPostLoad");
-					break;
-				}
-
-				// Called after all kPostLoad message handlers have run.
-				case SKSE::MessagingInterface::kPostPostLoad:{
-					logger::debug("kPostPostLoad");
-					break;
-				}
-
 				// Called when all game data has been found.
 				case SKSE::MessagingInterface::kInputLoaded:{
-					logger::debug("kInputLoaded");
+					//TODO: Function Calls To...
+					//SetupReceptors();
 					break;
 				}
 
 				// All ESM/ESL/ESP plugins have loaded, main menu is now active.
 				case SKSE::MessagingInterface::kDataLoaded:{
-					logger::debug("kDataLoaded");
-					break;
-				}
 
-				// Player's selected save game has finished loading.
-				case SKSE::MessagingInterface::kPostLoadGame:{
-					logger::debug("kPostLoadGame");
-					break;
-				}
+					CBP::loadSystemConfig();
+					CBP::loadMasterConfig();
+					CBP::loadConfig();
+					CBP::loadBounceInterpolationConfig();
+					CBP::loadCollisionConfig();
+					CBP::loadExtraCollisionConfig();
+					CBP::loadCollisionInterpolationConfig();
+					CBP::LoadPlayerCollisionEventConfig();
 
-				// Player starts a new game from main menu.
-				case SKSE::MessagingInterface::kNewGame:{
-					logger::debug("kNewGame");
-					break;
-				}
-
-				// Player selected a game to load, but it hasn't loaded yet, data will be the name of the loaded save.
-				case SKSE::MessagingInterface::kPreLoadGame:{
-					logger::debug("kPreLoadGame");
-					break;
-				}
-
-				// The player has saved a game.
-				case SKSE::MessagingInterface::kSaveGame:{
-					logger::debug("kSaveGame");
-					break;
-				}
-
-				// The player deleted a saved game from within the load menu, data will be the save name.
-				case SKSE::MessagingInterface::kDeleteGame:{
-					logger::debug("kDeleteGame");
 					break;
 				}
 
@@ -69,22 +39,22 @@ namespace {
 			Util::Win32::ReportAndExit("Unable to register message listener.");
 		}
 	}
-
-	void WaitForDebugger() {
-		#ifdef DEBUG
-			Util::Win32::ReportInfo("Attach Debugger And Press OK.");
-		#endif
-	}
 }
 
 SKSEPluginLoad(const SKSE::LoadInterface * a_SKSE) {
 
-	WaitForDebugger();
-
 	SKSE::Init(a_SKSE);
-
 	logger::Initialize();
+	logger::SetLevel("trace");
+	Hooks::Install();
+
 	InitializeMessaging();
+
+	//TODO:
+	//Register Papyrus Interface
+	//Register for TESEquipEvent
+
+
 
 	logger::info("SKSEPluginLoad OK");
 
